@@ -1,6 +1,18 @@
 //Liberar espacio de memoria de los nodos impresos
 //funcion que se desplace por la lista y me imprima hasta que encuentre un salto de linea
 //funcion que me cree y rellene una lista enlazada en el que cada nodo este el numero de bytes que se puede leer 
+void	addNewNode(t_list **list, char *buf)
+{
+	t_list	*newNode;
+	t_list	*lastNode;
+
+	lastNode = ft_lstlast(*list);
+	newNode = malloc(sizeof(t_list));
+	if (NULL == newNode)
+		return ;
+	ft_lstadd_back(list, newNode);
+}
+
 void	create_list(t_list **list, int fd)
 {
 	int		numChar;
@@ -12,13 +24,13 @@ void	create_list(t_list **list, int fd)
 		if (!buf)
 			return ;
 		numChar = read(fd, buf, BUFFERSIZE);
-		if(!numChar)
+		if(numChar == -1)
 		{
 			free(buf);
 			return ;
 		}
 		buf[numChar] = '\0';
-		//addNewNode
+		addNewNode(list, buf);
 	}
 }
 //get_next_line
@@ -27,7 +39,8 @@ char *get_next_line(int fd)
 	static t_list	*list;
 	char			*currentLine;
 
-	if (fd < 0 || BUFFERSIZE <= 0 || read(fd, &currentLine) < 0)
+	//If para asegurarnos de que el archivo al menos se puede leer
+	if (fd < 0 || BUFFERSIZE <= 0 || read(fd, 0, 0) < 0)
 		return (NULL);
 	create_list(&list, fd);
 	//find a line
