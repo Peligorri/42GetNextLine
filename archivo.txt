@@ -1,0 +1,25 @@
+
+Hola mundo, este es un texto de prueba para la función get_next_line.
+Quiero saber si la función hace los saltos de línea correctos.
+Procedo a poner una lista:
+Uno
+Dos.
+Tres
+Cuatro
+5
+Seis
+Siete
+Ocho
+Nueve
+10
+Once
+12
+13
+Catorce
+Quince
+Dieciseis
+Diecisiete
+Dieciocho
+Diecinueve
+20
+Fin del texto.
