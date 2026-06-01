@@ -6,7 +6,7 @@
 /*   By: jangonza <jangonza@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/01 11:05:14 by jangonza          #+#    #+#             */
-/*   Updated: 2026/06/01 11:05:17 by jangonza         ###   ########.fr       */
+/*   Updated: 2026/06/01 16:43:48 by jangonza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,22 +84,21 @@ static void	cut_list(t_list **list)
 	actual_node = *list;
 	while (actual_node && !ft_strchr(actual_node->content, '\n'))
 		actual_node = actual_node->next;
+	if (!actual_node)
+		return (clean_list(list));
 	i = 0;
 	while (((char *)actual_node->content)[i] != '\n')
 		i++;
 	rest = malloc(ft_strlen(actual_node->content + ++i) + 1);
 	if (!rest)
-		return ;
+		return (free(rest));
 	j = 0;
 	while (((char *)actual_node->content)[i])
 		rest[j++] = ((char *)actual_node->content)[i++];
 	rest[j] = '\0';
 	clean_list(list);
 	if (!rest[0])
-	{
-		*list = NULL;
 		return (free(rest));
-	}
 	add_new_node(list, rest);
 }
 
@@ -123,7 +122,7 @@ char	*get_next_line(int fd)
 	int		fd;
 	char	*line;
 
-	fd = open("2text.txt", O_RDONLY);
+	fd = open("bla", O_RDONLY);
 	if (fd == -1)
 		return (1);
 	line = get_next_line(fd);
