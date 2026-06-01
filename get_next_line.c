@@ -1,17 +1,16 @@
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <stdio.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jangonza <jangonza@student.42urduliz.com>  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/06/01 11:05:14 by jangonza          #+#    #+#             */
+/*   Updated: 2026/06/01 11:05:17 by jangonza         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#ifndef BUFFER_SIZE
-# define BUFFER_SIZE 5
-#endif
-
-typedef struct s_list
-{
-	void			*content;
-	struct s_list	*next;
-}	t_list;
+#include "get_next_line.h"
 
 static void	create_list(t_list **list, int fd)
 {
@@ -32,27 +31,6 @@ static void	create_list(t_list **list, int fd)
 		buf[bytes] = '\0';
 		add_new_node(list, buf);
 	}
-}
-
-static int	line_len(t_list *list)
-{
-	int	i;
-	int	len;
-
-	len = 0;
-	while (list)
-	{
-		i = 0;
-		while (((char *)list->content)[i])
-		{
-			len++;
-			if (((char *)list->content)[i] == '\n')
-				return (len);
-			i++;
-		}
-		list = list->next;
-	}
-	return (len);
 }
 
 static char	*get_one_line(t_list *list)
@@ -98,38 +76,29 @@ static void	clean_list(t_list **list)
 
 static void	cut_list(t_list **list)
 {
-	t_list	*actualNode;
+	t_list	*actual_node;
 	char	*rest;
 	int		i;
 	int		j;
 
-	actualNode = *list;
-	while (actualNode && !ft_strchr(actualNode->content, '\n'))
-		actualNode = actualNode->next;
-	if (!actualNode)
-	{
-		clean_list(list);
-		return ;
-	}
+	actual_node = *list;
+	while (actual_node && !ft_strchr(actual_node->content, '\n'))
+		actual_node = actual_node->next;
 	i = 0;
-	while (((char *)actualNode->content)[i] != '\n')
+	while (((char *)actual_node->content)[i] != '\n')
 		i++;
-	i++;
-	rest = malloc(ft_strlen(actualNode->content + i) + 1);
+	rest = malloc(ft_strlen(actual_node->content + ++i) + 1);
 	if (!rest)
 		return ;
 	j = 0;
-	while (((char *)actualNode->content)[i])
-		rest[j++] = ((char *)actualNode->content)[i++];
+	while (((char *)actual_node->content)[i])
+		rest[j++] = ((char *)actual_node->content)[i++];
 	rest[j] = '\0';
-
 	clean_list(list);
-
 	if (!rest[0])
 	{
-		free(rest);
 		*list = NULL;
-		return ;
+		return (free(rest));
 	}
 	add_new_node(list, rest);
 }
@@ -141,26 +110,22 @@ char	*get_next_line(int fd)
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 		return (NULL);
-
 	create_list(&list, fd);
 	if (!list)
 		return (NULL);
-
 	line = get_one_line(list);
 	cut_list(&list);
-
 	return (line);
 }
 
-int	main(void)
+/*int	main(void)
 {
 	int		fd;
 	char	*line;
 
-	fd = open("text.txt", O_RDONLY);
+	fd = open("2text.txt", O_RDONLY);
 	if (fd == -1)
 		return (1);
-
 	line = get_next_line(fd);
 	while (line)
 	{
@@ -170,4 +135,4 @@ int	main(void)
 	}
 	close(fd);
 	return (0);
-}
+}*/

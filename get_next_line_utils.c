@@ -1,7 +1,16 @@
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <stdio.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jangonza <jangonza@student.42urduliz.com>  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/06/01 11:05:36 by jangonza          #+#    #+#             */
+/*   Updated: 2026/06/01 11:05:40 by jangonza         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "get_next_line.h"
 
 size_t	ft_strlen(char *str)
 {
@@ -31,34 +40,49 @@ char	*ft_strchr(char *str, int c)
 	return (NULL);
 }
 
-void	ft_lstadd_back(t_list **lst, t_list *newNode)
+void	add_new_node(t_list **list, char *buf)
 {
-	t_list	*actualNode;
+	t_list	*new_node;
+	t_list	*actual_node;
 
-	if (!*lst)
+	new_node = malloc(sizeof(t_list));
+	if (!new_node)
+		return ;
+	new_node->content = buf;
+	new_node->next = NULL;
+	if (!*list)
 	{
-		*lst = newNode;
+		*list = new_node;
 		return ;
 	}
-	actualNode = *lst;
-	while (actualNode->next)
-		actualNode = actualNode->next;
-	actualNode->next = newNode;
+	actual_node = *list;
+	while (actual_node->next)
+		actual_node = actual_node->next;
+	actual_node->next = new_node;
 }
 
-static void	add_new_node(t_list **list, char *buf)
+int	line_len(t_list *list)
 {
-	t_list	*newNode;
+	int	i;
+	int	len;
 
-	newNode = malloc(sizeof(t_list));
-	if (!newNode)
-		return ;
-	newNode->content = buf;
-	newNode->next = NULL;
-	ft_lstadd_back(list, newNode);
+	len = 0;
+	while (list)
+	{
+		i = 0;
+		while (((char *)list->content)[i])
+		{
+			len++;
+			if (((char *)list->content)[i] == '\n')
+				return (len);
+			i++;
+		}
+		list = list->next;
+	}
+	return (len);
 }
 
-static int	has_newline(t_list *list)
+int	has_newline(t_list *list)
 {
 	while (list)
 	{
