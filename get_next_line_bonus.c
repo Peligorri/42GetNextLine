@@ -104,34 +104,47 @@ static void	cut_list(t_list **list)
 
 char	*get_next_line(int fd)
 {
-	static t_list	*list;
+	static t_list	*list[1024];
 	char			*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
+	{
+	    clean_list(&list[fd]);
+	    return (NULL);
+	}
+	create_list(&list[fd], fd);
+	if (!list[fd])
 		return (NULL);
-	create_list(&list, fd);
-	if (!list)
-		return (NULL);
-	line = get_one_line(list);
-	cut_list(&list);
+	line = get_one_line(list[fd]);
+	cut_list(&list[fd]);
 	return (line);
 }
 
 /*int	main(void)
 {
 	int		fd;
+	int		fd2;
 	char	*line;
 
-	fd = open("bla", O_RDONLY);
-	if (fd == -1)
+	fd = open("test.txt", O_RDONLY);
+	fd2 = open("test2.txt", O_RDONLY);
+	if (fd == -1 || fd2 == -1)
 		return (1);
 	line = get_next_line(fd);
-	while (line)
-	{
-		printf("%s", line);
-		free(line);
-		line = get_next_line(fd);
-	}
+	printf("%s", line);
+	line = get_next_line(fd2);
+	printf("%s", line);
+	line = get_next_line(fd);
+	printf("%s", line);
+	line = get_next_line(fd2);
+	printf("%s", line);
+	line = get_next_line(fd);
+	printf("%s", line);
+	line = get_next_line(fd2);
+	printf("%s", line);
+	free(line);
+
 	close(fd);
+	close(fd2);
 	return (0);
 }*/
